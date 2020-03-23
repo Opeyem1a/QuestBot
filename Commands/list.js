@@ -1,5 +1,3 @@
-//import modules and necessary directories
-
 //validate functions approves/denies the arg values that are passed
 function validate(args){
   return true;
@@ -8,7 +6,11 @@ function validate(args){
 module.exports = {
   execute(client, campaigns, message, args) {
       if(validate(args)){
-        message.channel.send(sum(args));
+        var response = "";
+        for(campaign of campaigns){
+          response += campaign.name;
+        }
+        message.channel.send(respone);
       } else {
         message.reply("Sorry, that wasn't valid");
       }
