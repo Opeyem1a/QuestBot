@@ -16,7 +16,7 @@ function sum(args) {
 }
 
 module.exports = {
-  execute(client, message, args) {
+  execute(client, campaigns, message, args) {
       if(validate(args)){
         message.channel.send(sum(args));
       } else {

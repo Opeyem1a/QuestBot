@@ -1,5 +1,5 @@
 module.exports = {
-  execute(client, message, args) {
+  execute(client, campaigns, message, args) {
       message.channel.send('Pong.');
   },
   enabled: true,

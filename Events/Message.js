@@ -1,7 +1,7 @@
 const {prefix, name} = require('../config.json');
 
 module.exports = {
-  handle(client, commands, message) {
+  handle(client, commands, campaigns, message) {
     //if the message doesn't have the unique prefix or is another bot, stop
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     //args is an array of everything the user typed, besides the prefix
@@ -13,7 +13,7 @@ module.exports = {
 
     //run this command
     try {
-      commands.get(command).execute(client, message, args);
+      commands.get(command).execute(client, campaigns, message, args);
     } catch (error) {
     	console.error(error);
     	message.reply(`The command ${command} could not be executed.`);
