@@ -1,3 +1,6 @@
+//import required node_modules
+const format = require('../Functions/discordFormat.js');
+
 //validate functions approves/denies the arg values that are passed
 function validate(args){
   return true;
@@ -6,11 +9,11 @@ function validate(args){
 module.exports = {
   execute(client, campaigns, message, args) {
       if(validate(args)){
-        var response = "";
+        var response = [];
         for(campaign of campaigns){
-          response += campaign[0];
+          response.push(campaign[0]);
         }
-        message.channel.send(response);
+        message.channel.send(format.listItems(response));
       } else {
         message.reply("Sorry, that wasn't valid");
       }
