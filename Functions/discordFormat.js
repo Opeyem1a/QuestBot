@@ -9,7 +9,7 @@ module.exports = {
     return `__${string}__`;
   },
   quote(string){
-    return `>${string}`;
+    return `> ${string}`;
   },
   tickcode(string){
     return "`" + string + "`";
@@ -19,7 +19,7 @@ module.exports = {
   },
   listItems(stringArr){
     return stringArr.reduce(function(a, b) {
-      return a + ''\n' + b;
+      return a + '\n' + b;
     }, '');
   }
 }

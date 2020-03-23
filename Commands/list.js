@@ -6,12 +6,32 @@ function validate(args){
   return true;
 };
 
+function calAverage(array){
+  var sum = array.reduce((a,b) => {
+    return a + b;
+  }, 0);
+  return sum / array.length;
+}
+
+function averageTime(campaign){
+  var times = [];
+  for(const task of campaign[1].tasks){
+    if(task.timeframe.length > 0)
+      times.push(calAverage(task.timeframe));
+    else
+      times.push(0);
+  }
+  return calAverage(times);
+}
+
 module.exports = {
   execute(client, campaigns, message, args) {
       if(validate(args)){
         var response = [];
         for(campaign of campaigns){
-          response.push(campaign[0]);
+          avgTime = averageTime(campaign);
+          response.push(format.bold(campaign[0]), format.quote(campaign[1].synopsis), format.quote(avgTime));
+          response.push(" ");
         }
         message.channel.send(format.listItems(response));
       } else {
@@ -26,4 +46,4 @@ module.exports = {
   description: "Returns a list of all available Campaigns to join.",
   usage: "",
   usageDelim: ""
-}
+};
