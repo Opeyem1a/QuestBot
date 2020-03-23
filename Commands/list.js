@@ -8,9 +8,9 @@ module.exports = {
       if(validate(args)){
         var response = "";
         for(campaign of campaigns){
-          response += campaign.name;
+          response += campaign[0];
         }
-        message.channel.send(respone);
+        message.channel.send(response);
       } else {
         message.reply("Sorry, that wasn't valid");
       }
