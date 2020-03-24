@@ -7,6 +7,9 @@ function validate(args){
   return true;
 };
 
+const allInputs = new Collection();
+for()
+
 module.exports = {
   execute(client, message, args) {
       if(validate(args)){
@@ -25,7 +28,7 @@ module.exports = {
           }
         }
 
-        message.channel.send(listItems(items));
+        message.channel.send(format.listItems(items));
       } else {
         message.reply("Sorry, that wasn't valid");
       }

@@ -12,7 +12,7 @@ module.exports = {
       if(validate(args)){
         var response = [];
         for(campaign of client.campaigns){
-          avgTime = timefunc.averageTime(campaign);
+          avgTime = timefunc.averageCampTime(campaign);
           response.push(format.bold(campaign[0]), format.quote(campaign[1].synopsis), format.quote(avgTime));
           response.push(" ");
         }

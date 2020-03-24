@@ -1,11 +1,15 @@
+function calAverage(array){
+  var sum = array.reduce((a,b) => {
+    return a + b;
+  }, 0);
+  return sum / array.length;
+};
+
 module.exports = {
   calAverage(array){
-    var sum = array.reduce((a,b) => {
-      return a + b;
-    }, 0);
-    return sum / array.length;
+    return calAverage(array);
   },
-  averageTime(campaign){
+  averageCampTime(campaign){
     var times = [];
     for(const task of campaign[1].tasks){
       if(task.timeframe.length > 0)
@@ -14,5 +18,5 @@ module.exports = {
         times.push(0);
     }
     return calAverage(times);
-  },
+  }
 }
