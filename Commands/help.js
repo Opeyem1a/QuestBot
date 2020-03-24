@@ -52,35 +52,48 @@ module.exports = {
   execute(client, message, args) {
     //if the arguments are valid
       if(validate(args)){
-        //initialize the items array to stored relevant information about the cammond/campaign
-        var items =[];
-        var response = "";
+        try {
+          //initialize the items array to stored relevant information about the cammond/campaign
+          var items =[];
+          var response = "";
 
-        //if the help command was called without specifying a command or campaign
-        if(args.length == 0) {
-          for(var command of client.commands){
-            var command = client.commands.get(command);
-            items.push(command.name, command.description, command.usage);
-            response = `${response}${displayCommand(items)}\n`;
+          //if the help command was called without specifying a command or campaign
+          if(args.length == 0) {
+            //for every command loaded to the client
+            for(var command of client.commands){
+              var command = client.commands.get(command);
+              //push relevant information from the command
+              items.push(command.name, command.description, command.usage);
+              response = `${response}${displayCommand(items)}\n`;
+            }
+            //message the help box for this command
+            message.channel.send(response);
+            return;
           }
+
+          // if a command was specified in the help call
+          if(client.commands.has(args[0].toLowerCase())){
+            //find this specific command in the client's commands
+            command = client.commands.get(args[0]);
+            //push relevant information from the command
+            items.push(command.name, command.description, command.usage, command.aliases);
+            response = displayCommand(items);
+          // if a campaign was specified in the help call
+          } else if(client.campaigns.has(args[0].toLowerCase())){
+            //find this specific campaign in the client's campaign's
+            campaign = client.campaigns.get(args[0]);
+            //push relevant information from the campaign
+            items.push(campaign.name, campaign.synopsis, campaign.tasks);
+            response = displayCampaign(items);
+          } else {
+            //if the argument matches no commands or campaigns, return a default message
+            response = responses.unfoundItem;
+          }
+          //message the help box for the required scenario in the chat
           message.channel.send(response);
-          return;
+        } catch (error) {
+          console.error(error);
         }
-
-        // if a command/campaign was specified in the help call
-        if(client.commands.has(args[0].toLowerCase())){
-          command = client.commands.get(args[0]);
-          items.push(command.name, command.description, command.usage, command.aliases);
-          response = displayCommand(items);
-        } else if(client.campaigns.has(args[0].toLowerCase())){
-          campaign = client.campaigns.get(args[0]);
-          items.push(campaign.name, campaign.synopsis, campaign.tasks);
-          response = displayCampaign(items);
-        } else {
-          response = responses.unfoundItem;
-        }
-
-        message.channel.send(response);
       } else {
         message.reply("Sorry, that wasn't valid");
       }
