@@ -17,7 +17,7 @@ function displayCommand(items){
     output = `${config.prefix}${items[0]}`;
     //if there is no usage parameter, place this in it's position instead
     if(!items[2]) items[2] = f.code("          ");
-    output = `${f.bold(f.code(output))} ${f.italics(f.code(items[2]))} \n${f.italics(items[1])}`;
+    output = `${f.bold(f.code(output))} ${f.code(items[2])} \n${f.italics(items[1])}`;
   } else { //if a specific command was given
     output = `${config.prefix}${items[0]}`;
     //if there is no usage parameter, place these lines in it's position instead
@@ -29,13 +29,13 @@ function displayCommand(items){
       //format list of aliases: i.e. Alias1 | Alias2 | etc
       var aliases = items[3].reduce((a, b) => {
         b = f.code(b);
-        if(a){ return a + "|" + b; } else {return b}
+        if(a){ return a + "  " + b; } else {return b}
       },"");
-      aliases = `${f.code('Aliases')} ${aliases}`;
-      output = `${output} ${f.italics(f.code(items[2]))} \n${aliases} \n${f.italics(items[1])}`;
+      aliases = `${f.code('Aliases:')} ${aliases}`;
+      output = `${output} ${f.code(items[2])} \n${aliases} \n${f.code('Description:')}${f.italics(items[1])}`;
     } else {
       //if no aliases, skip this section of the output entirely
-      output = `${output} ${f.italics(f.code(items[2]))} \n${items[1]}`;
+      output = `${output} ${f.code(items[2])} \n${f.code('Description:')}${items[1]}`;
     }
   }
   return output;
@@ -45,7 +45,8 @@ function displayCommand(items){
 function displayCampaign(items){
   var output = "";
   //format the string and capitalize the Name of the campaign properly
-  output += `${f.bold(f.capitalize(items[0]))} - ${f.code(items[2].length + 'Tasks')} \n${items[1]}`;
+  var numTasks = items[2].length == 1 ? items[2].length + ' Task' : items[2].length + ' Tasks';
+  output += `${f.bold(f.capitalize(items[0]))} - ${f.code(numTasks)} \n${items[1]}`;
   return output;
 }
 
@@ -97,7 +98,7 @@ module.exports = {
           console.error(error);
         }
       } else {
-        message.reply("Sorry, that wasn't valid");
+        message.reply(responses.invalidCall);
       }
   },
   enabled: true,
