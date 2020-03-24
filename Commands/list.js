@@ -9,10 +9,14 @@ function validate(args){
 
 module.exports = {
   execute(client, message, args) {
+    //if arguments are valid
       if(validate(args)){
         var response = [];
+        //loop through each campaign
         for(campaign of client.campaigns){
+          //Compute the average time to complete each task in the campaign
           avgTime = timefunc.averageCampTime(campaign);
+          //Place info within an array that will be printed as a list
           response.push(format.bold(campaign[0]), format.quote(campaign[1].synopsis), format.quote(avgTime));
           response.push(" ");
         }

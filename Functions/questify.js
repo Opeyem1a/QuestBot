@@ -1,5 +1,5 @@
 module.exports = {
   questify(word) {
-    
+
   }
 }
