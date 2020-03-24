@@ -21,5 +21,8 @@ module.exports = {
     return stringArr.reduce(function(a, b) {
       return a + '\n' + b;
     }, '');
+  },
+  capitalize(string){
+    return string[0].toUpperCase() + string.substr(1).toLowerCase();
   }
 }

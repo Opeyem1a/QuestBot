@@ -7,7 +7,7 @@ const config = require('../config.json');
 //validate functions approves/denies the arg values that are passed
 function validate(args){
   return true;
-};
+}
 
 //returns a help string for a command given an array containing the information needed
 function displayCommand(items){
@@ -15,18 +15,26 @@ function displayCommand(items){
   //if this is for a bulk commands view print.
   if(items.length == 3){
     output = `${config.prefix}${items[0]}`;
+    //if there is no usage parameter, place these lines in it's position instead
     if(!items[2]) items[2] = "-----";
     output = `${f.bold(f.tickcode(output))} ${f.italics(items[2])} \n${items[1]}`;
   } else { //if a specific command was given
     output = `${config.prefix}${items[0]}`;
+    //if there is no usage parameter, place these lines in it's position instead
     if(!items[2]) items[2] = "-----";
-
-    output = `${f.tickcode(output)}`;
+    //format the command with the correct prefix
+    output = `${f.bold(f.tickcode(output))}`;
+    //if there are alias names for this command, concatenate them here and add to output
     if(items[3] != 0) {
-      var aliases = items[3].reduce((a, b) => { return a + "|" + b; },"");
-      output = `${output}${f.italics(items[2])} \n${aliases} \n${items[1]}`;
+      //format list of aliases: i.e. Alias1 | Alias2 | etc
+      var aliases = f.underline('Aliases:') + items[3].reduce((a, b) => {
+        b = f.tickcode(b);
+        if(a){ return a + "|" + b; } else {return b}
+      },"");
+      output = `${output} ${f.italics(items[2])} \n${aliases} \n${items[1]}`;
     } else {
-      output = `${output}${f.italics(items[2])} \n${items[1]}`;
+      //if no aliases, skip this section of the output entirely
+      output = `${output} ${f.italics(items[2])} \n${items[1]}`;
     }
   }
   return output;
@@ -35,10 +43,9 @@ function displayCommand(items){
 //returns a help string for a campaign given an array containing the information needed
 function displayCampaign(items){
   var output = "";
-
+  output += `${f.bold(f.capitalize(items[0]))} - ${items[2].length} Tasks \n${items[1]}`;
   return output;
 }
-
 
 module.exports = {
   execute(client, message, args) {
