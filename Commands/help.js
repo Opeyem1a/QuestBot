@@ -43,7 +43,8 @@ function displayCommand(items){
 //returns a help string for a campaign given an array containing the information needed
 function displayCampaign(items){
   var output = "";
-  output += `${f.bold(f.capitalize(items[0]))} - ${items[2].length} Tasks \n${items[1]}`;
+  //format the string and capitalize the Name of the campaign properly
+  output += `${f.bold(f.capitalize(items[0]))} - ${f.tickcode(items[2].length + 'Tasks')} \n${items[1]}`;
   return output;
 }
 
@@ -58,8 +59,7 @@ module.exports = {
         //if the help command was called without specifying a command or campaign
         if(args.length == 0) {
           for(var command of client.commands){
-            items = [];
-            command = command[1];
+            var command = client.commands.get(command);
             items.push(command.name, command.description, command.usage);
             response = `${response}${displayCommand(items)}\n`;
           }
@@ -73,7 +73,7 @@ module.exports = {
           items.push(command.name, command.description, command.usage, command.aliases);
           response = displayCommand(items);
         } else if(client.campaigns.has(args[0].toLowerCase())){
-          campaign = client.campaigns.get(args[0])[1];
+          campaign = client.campaigns.get(args[0]);
           items.push(campaign.name, campaign.synopsis, campaign.tasks);
           response = displayCampaign(items);
         } else {
