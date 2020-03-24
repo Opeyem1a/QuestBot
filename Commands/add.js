@@ -16,7 +16,7 @@ function sum(args) {
 }
 
 module.exports = {
-  execute(client, campaigns, message, args) {
+  execute(client, message, args) {
       if(validate(args)){
         message.channel.send(sum(args));
       } else {
@@ -29,6 +29,5 @@ module.exports = {
   botPerms: [],
   name: "add",
   description: "Adds two numbers.",
-  usage: "",
-  usageDelim: ""
+  usage: ""
 }

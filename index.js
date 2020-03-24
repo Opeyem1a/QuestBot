@@ -43,7 +43,7 @@ client.once('ready', () => {
 
 client.on('message', message => {
   //pass the message to the message event handler
-  messageEvent.handle(client, client.commands, client.campaigns, message);
+  messageEvent.handle(client, message);
 });
 
 client.login(config.token);

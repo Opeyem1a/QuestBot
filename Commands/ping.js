@@ -1,5 +1,5 @@
 module.exports = {
-  execute(client, campaigns, message, args) {
+  execute(client, message, args) {
       message.channel.send('Pong.');
   },
   enabled: true,
@@ -8,6 +8,5 @@ module.exports = {
   botPerms: [],
   name: "ping",
   description: "Ping/Pong command. I wonder what this does? /sarcasm",
-  usage: "",
-  usageDelim: ""
+  usage: ""
 }
