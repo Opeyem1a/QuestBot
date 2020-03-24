@@ -11,10 +11,10 @@ module.exports = {
   quote(string){
     return `> ${string}`;
   },
-  tickcode(string){
+  code(string){
     return "`" + string + "`";
   },
-  codebox(string, language){
+  block(string, language){
       return "```" + language + "\n" + string + "```";
   },
   listItems(stringArr){

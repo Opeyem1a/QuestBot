@@ -13,28 +13,29 @@ function validate(args){
 function displayCommand(items){
   var output = "";
   //if this is for a bulk commands view print.
-  if(items.length == 3){
+  if(items.length == 3) {
     output = `${config.prefix}${items[0]}`;
-    //if there is no usage parameter, place these lines in it's position instead
-    if(!items[2]) items[2] = "-----";
-    output = `${f.bold(f.tickcode(output))} ${f.italics(items[2])} \n${items[1]}`;
+    //if there is no usage parameter, place this in it's position instead
+    if(!items[2]) items[2] = f.code("          ");
+    output = `${f.bold(f.code(output))} ${f.italics(f.code(items[2]))} \n${f.italics(items[1])}`;
   } else { //if a specific command was given
     output = `${config.prefix}${items[0]}`;
     //if there is no usage parameter, place these lines in it's position instead
-    if(!items[2]) items[2] = "-----";
+    if(!items[2]) items[2] = f.code("          ");
     //format the command with the correct prefix
-    output = `${f.bold(f.tickcode(output))}`;
+    output = `${f.bold(f.code(output))}`;
     //if there are alias names for this command, concatenate them here and add to output
     if(items[3] != 0) {
       //format list of aliases: i.e. Alias1 | Alias2 | etc
-      var aliases = f.underline('Aliases:') + items[3].reduce((a, b) => {
-        b = f.tickcode(b);
+      var aliases = items[3].reduce((a, b) => {
+        b = f.code(b);
         if(a){ return a + "|" + b; } else {return b}
       },"");
-      output = `${output} ${f.italics(items[2])} \n${aliases} \n${items[1]}`;
+      aliases = `${f.code('Aliases')} ${aliases}`;
+      output = `${output} ${f.italics(f.code(items[2]))} \n${aliases} \n${f.italics(items[1])}`;
     } else {
       //if no aliases, skip this section of the output entirely
-      output = `${output} ${f.italics(items[2])} \n${items[1]}`;
+      output = `${output} ${f.italics(f.code(items[2]))} \n${items[1]}`;
     }
   }
   return output;
@@ -44,7 +45,7 @@ function displayCommand(items){
 function displayCampaign(items){
   var output = "";
   //format the string and capitalize the Name of the campaign properly
-  output += `${f.bold(f.capitalize(items[0]))} - ${f.tickcode(items[2].length + 'Tasks')} \n${items[1]}`;
+  output += `${f.bold(f.capitalize(items[0]))} - ${f.code(items[2].length + 'Tasks')} \n${items[1]}`;
   return output;
 }
 
@@ -61,7 +62,8 @@ module.exports = {
           if(args.length == 0) {
             //for every command loaded to the client
             for(var command of client.commands){
-              var command = client.commands.get(command);
+              items = [];
+              var command = command[1];
               //push relevant information from the command
               items.push(command.name, command.description, command.usage);
               response = `${response}${displayCommand(items)}\n`;
@@ -100,7 +102,7 @@ module.exports = {
   },
   enabled: true,
   guildOnly: false,
-  aliases: ["?"],
+  aliases: ["?", "idk"],
   botPerms: [],
   name: "help",
   description: "Guide for bot commands overall or individually.",
