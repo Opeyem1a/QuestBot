@@ -9,11 +9,15 @@ module.exports = {
     //command is the name of the command they called. This shifts args so args only contains the arguments
   	const command = args.shift().toLowerCase();
     //is that's not a loaded command, stop
-    if (!client.commands.has(command)) return;
+    if (!client.commands.has(command) && !client.aliases.has(command)) return;
 
     //run this command
     try {
-      client.commands.get(command).execute(client, message, args);
+      if(client.commands.has(command)){
+        client.commands.get(command).execute(client, message, args);
+      } else {
+        client.aliases.get(command).execute(client, message, args);
+      }
     } catch (error) {
     	console.error(error);
     	message.reply(`The command ${command} could not be executed.`);

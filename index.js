@@ -14,6 +14,8 @@ const messageEvent = require("./Events/Message.js");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.campaigns = new Discord.Collection();
+//support for command aliases
+client.aliases = new Discord.Collection();
 
 //gather all the files that correspond to commands into an array
 const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.js'));
@@ -22,6 +24,9 @@ const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.
 for (const file of commandFiles) {
 	const command = require(`${commandsDir}${file}`);
 	client.commands.set(command.name, command);
+	for(const alias of command.aliases){
+		client.aliases.set(alias, command);
+	}
   console.log(command.name);
 }
 
