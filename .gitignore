@@ -1,4 +1,5 @@
 node_modules/
-Data/UserTasks/
+Data/UserData/
 *.json
 *.bat
+!responses.json
