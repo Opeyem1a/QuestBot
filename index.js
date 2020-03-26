@@ -23,6 +23,7 @@ const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.
 //Loads commands into the client
 for (const file of commandFiles) {
 	const command = require(`${commandsDir}${file}`);
+	if(!command.enabled) return;
 	client.commands.set(command.name, command);
 	for(const alias of command.aliases){
 		client.aliases.set(alias, command);
@@ -43,7 +44,7 @@ for (const file of campaignFiles) {
 client.once('ready', () => {
 	console.log('Ready!');
   //console log the bot's custom invite link
-  console.log(`https://discordapp.com/oauth2/authorize?client_id=${config.id}&scope=bot`);
+  console.log(`https://discordapp.com/oauth2/authorize?client_id=${config.botID}&scope=bot`);
 });
 
 client.on('message', message => {
