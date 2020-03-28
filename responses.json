@@ -2,6 +2,7 @@
   "unfoundItem": "Hmm, I couldn't find what you were looking for in my files.",
   "inavlidCall": "Sorry, that wasn't a valid command call :'(",
   "userFileExists": "You already have an account",
-  "userNewFile": "A new user file has been created for"
+  "userNewFile": "A new user file has been created for",
+  "botNoPerms": "Sorry, I don't have the required permissions to complete this command."
 
 }
