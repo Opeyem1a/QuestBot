@@ -56,6 +56,7 @@ module.exports = {
   enabled: true,
   guildOnly: false,
   aliases: ["begin"],
+  userPermLevel: 3,
   botPerms: [],
   name: "start",
   description: "Creates a user account for quests.",

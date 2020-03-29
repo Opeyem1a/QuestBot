@@ -104,6 +104,7 @@ module.exports = {
   enabled: true,
   guildOnly: false,
   aliases: ["?", "idk"],
+  userPermLevel: 3,
   botPerms: [],
   name: "help",
   description: "Guide for bot commands overall or individually.",

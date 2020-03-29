@@ -26,6 +26,7 @@ module.exports = {
   enabled: true,
   guildOnly: false,
   aliases: [],
+  userPermLevel: 3,
   botPerms: [],
   name: "add",
   description: "Adds two numbers.",

@@ -28,6 +28,7 @@ module.exports = {
   enabled: true,
   guildOnly: false,
   aliases: [],
+  userPermLevel: 3,
   botPerms: [],
   name: "list",
   description: "Returns a list of all available Campaigns to join.",

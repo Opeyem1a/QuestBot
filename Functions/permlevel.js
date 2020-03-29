@@ -1,7 +1,7 @@
 const levels = [
   {
     "name": "manager",
-    "perms": ['MANAGE_MESSAGES', ]
+    "perms": ['MANAGE_SERVER', ]
   },
   {
     "name": "mod",
@@ -9,18 +9,18 @@ const levels = [
   },
   {
     "name": "trusted",
-    "perms": ['MANAGE_MESSAGES', ]
+    "perms": []
   },
   {
     "name": "base",
-    "perms": ['MANAGE_MESSAGES', ]
+    "perms": []
   }
 ]
 
 module.exports = {
   hasPermLevel(guildMember, lvl) {
     if(guildMember.hasPermission(levels[lvl].perms)) {
-      console.log(`${guildmember.username} has permissions at level ${levels[lvl].name}`);
+      console.log(`${guildMember.user.username} has permissions at level ${levels[lvl].name}`);
       return true;
     } else return false;
   }

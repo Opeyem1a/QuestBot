@@ -3,6 +3,6 @@
   "inavlidCall": "Sorry, that wasn't a valid command call :'(",
   "userFileExists": "You already have an account",
   "userNewFile": "A new user file has been created for",
-  "botNoPerms": "Sorry, I don't have the required permissions to complete this command."
-
+  "botNoPerms": "Sorry, I don't have the required permissions to complete this command.",
+  "userNoPerms": "Sorry, it seems you don't have the required permissions to perform this command. :/"
 }
