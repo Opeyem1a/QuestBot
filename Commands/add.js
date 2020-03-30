@@ -30,5 +30,5 @@ module.exports = {
   botPerms: [],
   name: "add",
   description: "Adds two numbers.",
-  usage: ""
+  usage: "<numbers to add>"
 }
