@@ -16,26 +16,26 @@ function displayCommand(items){
   if(items.length == 3) {
     output = `${config.prefix}${items[0]}`;
     //if there is no usage parameter, place this in it's position instead
-    if(!items[2]) items[2] = f.code("          ");
-    output = `${f.bold(f.code(output))} ${f.code(items[2])} \n${f.italics(items[1])}`;
+    var usage = items[2] ? f.code(items[2]) : "";
+    output = `${f.bold(output)} ${usage} \n${f.italics(items[1])}`;
   } else { //if a specific command was given
     output = `${config.prefix}${items[0]}`;
-    //if there is no usage parameter, place these lines in it's position instead
-    if(!items[2]) items[2] = f.code("          ");
     //format the command with the correct prefix
     output = `${f.bold(f.code(output))}`;
+    //if there is no usage parameter, place these lines in it's position instead
+    var usage = items[2] ? f.code(items[2]) : "";
     //if there are alias names for this command, concatenate them here and add to output
     if(items[3] != 0) {
       //format list of aliases: i.e. Alias1 | Alias2 | etc
       var aliases = items[3].reduce((a, b) => {
-        b = f.code(b);
-        if(a){ return a + "  " + b; } else {return b}
+        b = f.code(`'${b}'`);
+        if(a){ return `${a} ${b}`; } else {return b}
       },"");
-      aliases = `${f.code('Aliases:')} ${aliases}`;
-      output = `${output} ${f.code(items[2])} \n${aliases} \n${f.code('Description:')}${f.italics(items[1])}`;
+      aliases = `Aliases: ${aliases}`;
+      output = `${output} ${usage} \n${aliases} \n${f.italics(items[1])}`;
     } else {
       //if no aliases, skip this section of the output entirely
-      output = `${output} ${f.code(items[2])} \n${f.code('Description:')}${items[1]}`;
+      output = `${output} ${usage} \n${items[1]}`;
     }
   }
   return output;
