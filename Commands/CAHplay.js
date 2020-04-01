@@ -99,7 +99,7 @@ module.exports = {
         message.reply("Sorry, that wasn't valid");
       }
   },
-  enabled: true,
+  enabled: false,
   guildOnly: false,
   aliases: ['playcah', 'cahplay'],
   userPermLevel: 3,

@@ -23,7 +23,7 @@ const commandFiles = fs.readdirSync(commandsDir).filter(file => file.endsWith('.
 //Loads commands into the client
 for (const file of commandFiles) {
 	const command = require(`${commandsDir}${file}`);
-	if(!command.enabled) return;
+	if(!command.enabled) continue;
 	client.commands.set(command.name, command);
 	for(const alias of command.aliases){
 		client.aliases.set(alias, command);
