@@ -6,7 +6,7 @@ module.exports = {
   enabled: true,
   guildOnly: false,
   aliases: [],
-  userPermLevel: 3,
+  userPermLevel: 2,
   botPerms: [],
   name: "ping",
   description: "Ping/Pong command. I wonder what this does? /sarcasm",
