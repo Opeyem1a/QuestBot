@@ -1,5 +1,5 @@
 const Cards = require('./CAHCards.json');
-const f = require('../Functions/discordFormat.js');
+const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
 
 module.exports = class CAHGame {
@@ -12,7 +12,7 @@ module.exports = class CAHGame {
     this.players = [];
     this.playedCards = [];
     this.GM = message.author.id;
-    this.joinMessage = "Boop";
+    this.joinMessage = "";
   }
 
   leaderboard(){
@@ -39,6 +39,7 @@ module.exports = class CAHGame {
           collector.on('end', collected => {
             if(collected.size == 0){
               message.channel.send(`The Cards Against Humanity game started by ${this.message.author.username} has timed out. :'(`);
+              CAHGame.playing.pop();
               return;
             }
             this.start(collected);
@@ -63,12 +64,38 @@ module.exports = class CAHGame {
               this.message.channel.send(`${f.bold(user.username)}, you're already playing another Cards Against Humanity game so you can't be added to this one! :'(`);
             }
           }
+          this.play();
         })
     }
   }
 
-  play() {
+  async play() {
+    const promises = this.players.filter(id => {
+      return this.client.users.fetch(id).then(user => {
+        return !user.bot
+      });
+    }).map(player => {
+      return this.client.users.fetch(player)
+        .then(user => {
+          user.send(`Hello`).then(messageDM => {
+            return [player, messageDM]
+          }).catch(error => console.error(error));
+        })
+    })
 
+    const playersMessage = await Promise.all(promises);
+
+    this.test(playersMessage);
+  }
+
+  test(playersMessage) {
+    this.players = playersMessage;
+    console.log(`BRUH`);
+    // console.log(playersMessage);
+    for(const obj of playersMessage){
+      console.log(obj);
+      obj[1].react('😜');
+    }
   }
 };
 
