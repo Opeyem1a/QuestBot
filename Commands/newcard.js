@@ -54,7 +54,7 @@ module.exports = {
           return;
         }
         //retreive json object of the card set
-        const cards = require('../Classes/CAHCards.json');
+        const cards = require('../Classes/CAH/CAHCards.json');
         //check if this new card entry already exists
         if(cardExists(cards, type, args)){
           message.channel.send(`${f.bold(message.author.username)}, it looks like this card has already been added, sorry! :'(`);
@@ -68,7 +68,7 @@ module.exports = {
           }
 
           //write the cards object back to the original file
-          fs.writeFile('./Classes/CAHCards.json', JSON.stringify(cards, null, 2), (error) => {
+          fs.writeFile('./Classes/CAH/CAHCards.json', JSON.stringify(cards, null, 2), (error) => {
             if (error) console.error(error);
             //inform the user of a successful card entry
             message.reply(`successfully added a new card!`)
