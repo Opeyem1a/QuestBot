@@ -3,15 +3,16 @@ const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
 
 module.exports = class CAHGame {
-  static playing = [];
+  static playing = new Map();
   constructor(client, message, args) {
     //args => [maxScore]
     this.maxScore = args[0];
     this.client = client;
     this.message = message;
-    this.players = [];
+    this.players = new Map();
+    this.playersDM = [];
     this.playedCards = [];
-    this.GM = message.author.id;
+    this.GM = message.author;
     this.joinMessage = "";
   }
 
@@ -20,10 +21,10 @@ module.exports = class CAHGame {
   }
 
   recruit() {
-    if(CAHGame.playing.includes(this.GM)) {
+    if(CAHGame.playing.has(this.GM.id)) {
       this.message.channel.send(`${f.bold(this.message.author.username)}, you're already playing a game of Cards Against Humanity.\nPlease leave your previous game before starting a new one!`);
     } else {
-      CAHGame.playing.push(this.GM);
+      CAHGame.playing.set(this.GM.id, this.GM);
       this.message.channel.send("Join the game.")
         .then(message => {
           message.react('✔');
@@ -34,15 +35,14 @@ module.exports = class CAHGame {
           return message;
         })
         .then(message => {
-          const filter = m => { return m.content.toLowerCase().startsWith('start') && m.author.id === this.GM; }
+          const filter = m => { return m.content.toLowerCase().startsWith('start') && m.author.id === this.GM.id; }
           const collector = message.channel.createMessageCollector(filter, { max: 1, time: 15000 });
           collector.on('end', collected => {
             if(collected.size == 0){
               message.channel.send(`The Cards Against Humanity game started by ${this.message.author.username} has timed out. :'(`);
-              CAHGame.playing.pop();
+              CAHGame.playing.delete(this.GM.id);
               return;
-            }
-            this.start(collected);
+            } else this.start(collected);
           });
         })
         .catch((error) => console.error(error));
@@ -56,36 +56,31 @@ module.exports = class CAHGame {
       reaction.users.fetch()
         .then(map => {
           for(const user of map.values()){
-            console.log(`${user.username} has joined a game of CAH.`);
-            if(!CAHGame.playing.includes(user.id)) {
-              this.players.push(user.id);
-              CAHGame.playing.push(user.id);
+            if(!CAHGame.playing.has(user.id)) {
+              if(user.bot) continue;
+              else {
+                console.log(`${user.username} has joined a game of CAH.`);
+                this.players.set(user.id, user);
+                CAHGame.playing.set(user.id, user);
+              }
             } else {
               this.message.channel.send(`${f.bold(user.username)}, you're already playing another Cards Against Humanity game so you can't be added to this one! :'(`);
             }
           }
+        }).then(() => {
           this.play();
         })
     }
   }
 
   async play() {
-    const promises = this.players.filter(id => {
-      return this.client.users.fetch(id).then(user => {
-        return !user.bot
-      });
-    }).map(player => {
-      return this.client.users.fetch(player)
-        .then(user => {
-          user.send(`Hello`).then(messageDM => {
-            return [player, messageDM]
-          }).catch(error => console.error(error));
-        })
+    this.players.forEach(user => {
+      console.log("Sent message to a user");
+      user.send(`Hiya`).then(messageDM => {
+        console.log(user.username);
+        this.players.set(user.id, [this.players.get(user.id), messageDM]);
+      })
     })
-
-    const playersMessage = await Promise.all(promises);
-
-    this.test(playersMessage);
   }
 
   test(playersMessage) {
