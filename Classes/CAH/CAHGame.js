@@ -2,6 +2,17 @@ const Cards = require('./CAHCards.json');
 const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
 
+function sendPlayerMessage(user, players, resolve){
+  console.log("Sent message to a user");
+  user.send(`Hiya`).then(messageDM => {
+    console.log(user.username);
+    const val = [players.get(user.id), messageDM];
+    players.set(user.id, val);
+    resolve();
+  })
+  .catch(error => console.error(error));
+}
+
 module.exports = class CAHGame {
   static playing = new Map();
   constructor(client, message, args) {
@@ -68,29 +79,29 @@ module.exports = class CAHGame {
             }
           }
         }).then(() => {
+          console.log(``)
           this.play();
         })
     }
   }
 
-  async play() {
-    this.players.forEach(user => {
-      console.log("Sent message to a user");
-      user.send(`Hiya`).then(messageDM => {
-        console.log(user.username);
-        this.players.set(user.id, [this.players.get(user.id), messageDM]);
-      })
-    })
+  setup() {
+    let sendAll = Array.from(this.players.values()).map(user => {
+      return new Promise((resolve) => {
+        sendPlayerMessage(user, this.players, resolve);
+      });
+    });
+
+    Promise.all(sendAll).then(() => this.test())
+      .catch(error => console.error(error));
   }
 
-  test(playersMessage) {
-    this.players = playersMessage;
-    console.log(`BRUH`);
-    // console.log(playersMessage);
-    for(const obj of playersMessage){
-      console.log(obj);
-      obj[1].react('😜');
-    }
+  test() {
+    //players is now a map with values of [user object, message dm object]
+    this.players.forEach(values => {
+      console.log(values[0].id);
+      values[1].react('😆');
+    })
   }
 };
 
