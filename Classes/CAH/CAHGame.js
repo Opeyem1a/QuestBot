@@ -104,11 +104,12 @@ module.exports = class CAHGame {
     //loop while game is not over
       //decide whos turn it currently is (go 1 by 1 through each player)
       //create a round with the round owner distinct from the players
-      //choose a black card and show it to everyone
+      //choose a black card and show it to everyone (edit their DM message), black card on top
 
       //create a Round object and run it
+              //called like (this.client, this.message, this.players, blackcard) in Game
 
-      //Round object will have a function that returns the winner of this return
+      //Round object will have a function that returns the winner of this return (and cards involved, and person whose turn it was)
         //store the winning white and black pair to that players leaderboard entirely
         //increment winning player's leader board entry by 1
         //check if game still needs completing
@@ -122,7 +123,7 @@ module.exports = class CAHGame {
   }
 
   test() {
-    //players is now a map with values of [user object, message dm object]
+    //players is now a map with values() of [user object, message DM object]
     this.players.forEach(values => {
       console.log(values[0].id);
       values[1].react('😆');
