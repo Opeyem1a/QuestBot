@@ -17,12 +17,11 @@ module.exports = class CAHGame {
   static playing = new Map();
   constructor(client, message, args) {
     //args => [maxScore]
-    this.maxScore = args[0];
     this.client = client;
+    this.blackcards = blackcards;
+    this.whitecards = whitecards;
     this.message = message;
     this.players = new Map();
-    this.playersDM = [];
-    this.playedCards = [];
     this.GM = message.author;
     this.joinMessage = "";
   }
@@ -79,8 +78,7 @@ module.exports = class CAHGame {
             }
           }
         }).then(() => {
-          console.log(``)
-          this.play();
+          this.setup();
         })
     }
   }
@@ -91,9 +89,36 @@ module.exports = class CAHGame {
         sendPlayerMessage(user, this.players, resolve);
       });
     });
-
     Promise.all(sendAll).then(() => this.test())
+      .then(() => this.play())
       .catch(error => console.error(error));
+  }
+
+  play() {
+    //draw 5 beginning cards and display each hand to its player
+    //add reactions 1 - 5 corresponding to cards in their hand
+
+      //option for new hand? Potentially another reaction for resuffle hand?
+        //hand() should probably be a function at this point
+
+    //loop while game is not over
+      //decide whos turn it currently is (go 1 by 1 through each player)
+      //create a round with the round owner distinct from the players
+      //choose a black card and show it to everyone
+
+      //create a Round object and run it
+
+      //Round object will have a function that returns the winner of this return
+        //store the winning white and black pair to that players leaderboard entirely
+        //increment winning player's leader board entry by 1
+        //check if game still needs completing
+
+      //Draw new card for everyone to replace played card
+      //Display each players new hand
+      //Delete all reactions on player DM messages
+      //add reactions 1 - 5 corresponding to cards in their hand again
+
+      //continuous check for if the GM ends the game at any point, immediately move to end phase
   }
 
   test() {
