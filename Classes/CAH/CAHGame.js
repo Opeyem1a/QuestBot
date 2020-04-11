@@ -1,16 +1,43 @@
+const Discord = require('discord.js');
 const Cards = require('./CAHCards.json');
 const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
+
+const embedColour = '#0099ff';
 
 function sendPlayerMessage(user, players, resolve){
   console.log("Sent message to a user");
   user.send(`Hiya`).then(messageDM => {
     console.log(user.username);
-    const val = [players.get(user.id), messageDM];
+    //map contains a player's hand of cards
+    const val = [players.get(user.id), messageDM, new Map()];
     players.set(user.id, val);
     resolve();
   })
   .catch(error => console.error(error));
+}
+
+function updateMessage(data){
+  //data === [User Object, DM Message Object, Map() of current hand]
+  var player = data[0];
+  var dm = data[1];
+  var handMap = data[2];
+  //if a blackcard was given, use it as a description
+  //var blackCards = !!data[3] ?
+  const embed = new Discord.MessageEmbed()
+	   .setColor(embedColour)
+     .setTitle(`${player.username}'s Hand`)
+     .setDescription(`Card in play: N/A`)
+  var text =
+  dm.edit()
+}
+
+function shuffle(cards) {
+  var shuffled = [];
+  return new Promise((resolve, reject) => {
+    shuffled = [].slice.call(cards).sort(() => Math.random() - 0.5);
+    resolve(shuffled);
+  });
 }
 
 module.exports = class CAHGame {
@@ -95,6 +122,25 @@ module.exports = class CAHGame {
   }
 
   play() {
+    //shuffle cards and players
+    var cards = [this.whitecards, this.blackcards, this.players];
+    let shuffled = cards.map(group => {
+      return shuffle(group);
+    })
+
+    Promise.all(shuffled)
+      .then(shuffled => {
+        this.whitecards = shuffled[0];
+        this.blackcards = shuffled[1];
+      })
+      .then(() => {
+        this.players.forEach(values => {
+          for(var i = 1; i <= 5; i++){
+            //values[2] is the map containing this player's hand
+            value[2].set(i, this.whitecards.shift())
+          }
+        })
+      })
     //draw 5 beginning cards and display each hand to its player
     //add reactions 1 - 5 corresponding to cards in their hand
 
