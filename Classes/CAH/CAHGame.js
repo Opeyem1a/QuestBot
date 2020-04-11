@@ -13,7 +13,7 @@ const emojiMap = new Map([
 
 function sendPlayerMessage(user, players, resolve){
   console.log("Sent message to a user");
-  user.send(`Hiya`).then(messageDM => {
+  user.send(`Adding you to the game...`).then(messageDM => {
     console.log(user.username);
     //map contains a player's hand of cards
     const val = [players.get(user.id), messageDM, new Map()];
@@ -23,34 +23,44 @@ function sendPlayerMessage(user, players, resolve){
   .catch(error => console.error(error));
 }
 
-function updateMessage(data){
+async function updateMessage(playersOBJ, data, resolve){
   //data === [User Object, DM Message Object, Map() of current hand]
   var player = data[0];
   var dm = data[1];
   var handMap = data[2];
-  //if a blackcard was given, use it as a description
-  //var blackCards = !!data[3] ?
-  const embed = new Discord.MessageEmbed()
-	   .setColor(embedColour)
-     .setTitle(`${player.username}'s Hand`)
-     .setDescription(`Card in play: N/A`)
-     .addFields(
-      		{ name: '1️⃣', value: handMap.get(1) },
-          { name: '2️⃣', value: handMap.get(2) },
-          { name: '3️⃣', value: handMap.get(3) },
-          { name: '4️⃣', value: handMap.get(4) },
-          { name: '5️⃣', value: handMap.get(5) },)
-  dm.edit(embed)
-    .then(dm => {
-      dm.reactions.removeAll().catch(error => console.error(error));
-      return dm;
-    })
-    .then(dm => {
-      emojiMap.forEach(values => {
-        dm.react(values);
+
+  const promise = new Promise((resolve) => {
+    var embed = new Discord.MessageEmbed()
+       .setColor(embedColour)
+       .setTitle(`${data[0].username}'s Hand`)
+       .setDescription(`Card in play: N/A`)
+       .addFields(
+            { name: '1️⃣', value: handMap.get(1) },
+            { name: '2️⃣', value: handMap.get(2) },
+            { name: '3️⃣', value: handMap.get(3) },
+            { name: '4️⃣', value: handMap.get(4) },
+            { name: '5️⃣', value: handMap.get(5) },);
+    resolve(embed);
+  })
+
+  promise.then((embed) => {
+    player.send(embed)
+      .then(newDM => {
+        console.log(newDM.embeds[0].description);
+        var newData = [data[0], newDM, data[2]];
+        playersOBJ.set(data[0].id, newData);
+        return newDM;
       })
-    })
-    .catch(error => console.error(error));
+      .then(newDM => {
+        dm.delete().catch(error => console.error(error));
+        console.log("B" + newDM.embeds[0].description);
+        emojiMap.forEach(values => {
+          newDM.react(values);
+        })
+      })
+      .then(() => resolve())
+      .catch(error => console.error(error));
+  })
 }
 
 function shuffle(cards) {
@@ -156,6 +166,7 @@ module.exports = class CAHGame {
       })
       .then(() => {
         this.players.forEach(values => {
+          //draw 5 beginning cards and display each hand to its player
           for(var i = 1; i <= 5; i++){
             //values[2] is the map containing this player's hand
             values[2].set(i, this.whitecards.shift());
@@ -163,12 +174,21 @@ module.exports = class CAHGame {
         })
       })
       .then(() => {
-        this.players.forEach(values => {
-          updateMessage(values);
+        let updateAll = Array.from(this.players.values()).map(data => {
+          return new Promise((resolve) => {
+            //add reactions 1 - 5 corresponding to cards in their hand
+            updateMessage(this.players, data, resolve);
+          })
         })
+
+        Promise.all(updateAll)
+            .then(() => {
+              this.players.forEach(values => {
+                console.log("H" + values[1].embeds[0].description);
+                values[1].react('😢');
+              })
+            })
       })
-    //draw 5 beginning cards and display each hand to its player
-    //add reactions 1 - 5 corresponding to cards in their hand
 
       //option for new hand? Potentially another reaction for resuffle hand?
         //hand() should probably be a function at this point
