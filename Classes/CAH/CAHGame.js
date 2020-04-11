@@ -4,6 +4,12 @@ const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
 
 const embedColour = '#0099ff';
+const emojiMap = new Map([
+  [1, '1️⃣'],
+  [2, '2️⃣'],
+  [3, '3️⃣'],
+  [4, '4️⃣'],
+  [5, '5️⃣']]);
 
 function sendPlayerMessage(user, players, resolve){
   console.log("Sent message to a user");
@@ -28,8 +34,23 @@ function updateMessage(data){
 	   .setColor(embedColour)
      .setTitle(`${player.username}'s Hand`)
      .setDescription(`Card in play: N/A`)
-  var text =
-  dm.edit()
+     .addFields(
+      		{ name: '1️⃣', value: handMap.get(1) },
+          { name: '2️⃣', value: handMap.get(2) },
+          { name: '3️⃣', value: handMap.get(3) },
+          { name: '4️⃣', value: handMap.get(4) },
+          { name: '5️⃣', value: handMap.get(5) },)
+  dm.edit(embed)
+    .then(dm => {
+      dm.reactions.removeAll().catch(error => console.error(error));
+      return dm;
+    })
+    .then(dm => {
+      emojiMap.forEach(values => {
+        dm.react(values);
+      })
+    })
+    .catch(error => console.error(error));
 }
 
 function shuffle(cards) {
@@ -137,8 +158,13 @@ module.exports = class CAHGame {
         this.players.forEach(values => {
           for(var i = 1; i <= 5; i++){
             //values[2] is the map containing this player's hand
-            value[2].set(i, this.whitecards.shift())
+            values[2].set(i, this.whitecards.shift());
           }
+        })
+      })
+      .then(() => {
+        this.players.forEach(values => {
+          updateMessage(values);
         })
       })
     //draw 5 beginning cards and display each hand to its player
