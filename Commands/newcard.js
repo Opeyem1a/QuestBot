@@ -73,7 +73,7 @@ module.exports = {
             //inform the user of a successful card entry
             message.reply(`successfully added a new card!`)
               .then(message => {
-                message.delete({ timeout: deleteTime });
+                //message.delete({ timeout: deleteTime });
               });
           });
         }
@@ -88,5 +88,5 @@ module.exports = {
   botPerms: [],
   name: "newcard",
   description: "Adds a new card to the Cards Against Humanity Deck. Remember to add '///' for blank spaces on black cards!",
-  usage: "<leave|end> <new card details>"
+  usage: "<w|b> <new card details>"
 };

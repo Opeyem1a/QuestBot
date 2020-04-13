@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const Cards = require('./CAHCards.json');
+const Round = require('./Round.js');
 const f = require('../../Functions/discordFormat.js');
 const { whitecards, blackcards } = require('./CAHCards.json');
 
@@ -12,7 +13,7 @@ const emojiMap = new Map([
   [5, '5️⃣']]);
 
 function sendPlayerMessage(user, players, resolve){
-  console.log("Sent message to a user");
+  console.log(`Sent message to [${user.username}]`);
   user.send(`Adding you to the game...`).then(messageDM => {
     console.log(user.username);
     //map contains a player's hand of cards
@@ -181,25 +182,43 @@ module.exports = class CAHGame {
           })
         })
 
-        Promise.all(updateAll)
-            .then(() => {
-              this.players.forEach(values => {
-                console.log("H" + values[1].embeds[0].description);
-                values[1].react('😢');
-              })
-            })
+        return Promise.all(updateAll).catch(e => console.error(e));
+      })
+      .then(() => {
+        //determine a turn order array storing user ids of players
+        const turnOrder = Array.from(this.players.keys()).map(key => {
+          return key;
+        });
+
+        var turn = 0;
+        var win = 0;
+        //loop while game is not over
+        do {
+          console.log("Here2");
+          //decide whos turn it currently is (go 1 by 1 through each player) and increment turn after
+          //create a round with the round owner distinct from the players
+          var currentRound = new Round(
+            this.client,
+            this.message,
+            turnOrder[turn++ % turnOrder.length], //round owner id
+            this.players,
+            this.blackcards.shift() //chooses a blackcard for this turn
+          );
+
+          //create a Round object and run it
+          const winner = currentRound.run();
+          //choose a black card and show it to everyone (edit their DM message), black card on top
+        } while (win != 0);
+        // this.players.forEach(values => {
+        //   console.log("H" + values[1].embeds[0].description);
+        //   values[1].react('😢');
+        // })
       })
 
-      //option for new hand? Potentially another reaction for resuffle hand?
+      .catch(e => console.error(e));
+
+      //// TODO: option for new hand? Potentially another reaction for resuffle hand?
         //hand() should probably be a function at this point
-
-    //loop while game is not over
-      //decide whos turn it currently is (go 1 by 1 through each player)
-      //create a round with the round owner distinct from the players
-      //choose a black card and show it to everyone (edit their DM message), black card on top
-
-      //create a Round object and run it
-              //called like (this.client, this.message, this.players, blackcard) in Game
 
       //Round object will have a function that returns the winner of this return (and cards involved, and person whose turn it was)
         //store the winning white and black pair to that players leaderboard entirely
