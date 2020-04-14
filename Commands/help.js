@@ -1,4 +1,5 @@
 //import required node_modules
+const Discord = require(`discord.js`);
 const f = require('../Functions/discordFormat.js');
 const list = require('./list.js');
 const responses = require('../responses.json');
@@ -7,6 +8,35 @@ const config = require('../config.json');
 //validate functions approves/denies the arg values that are passed
 function validate(args){
   return true;
+}
+
+function addEmbedField(embed, command){
+  var usage = command.usage ? f.italics(command.usage) : "";
+  var title = `${config.prefix}${command.name} ${usage}`;
+  var value = command.description
+  embed.addField(title, value, false);
+}
+
+function commandEmbed(embed, command){
+  embed.setTitle(command.name);
+
+  var params = command.usage ? f.italics(command.usage) : "";
+  var usage = `${config.prefix}${command.name} ${params}`;
+  embed.addField(`Usage`, usage, false);
+
+  var aliases = command.aliases.reduce((a, b) => {
+        b = f.code(`'${b}'`);
+        if(a){ return `${a} ${b}`; } else {return b}
+      },"");
+
+  var checkAlias = aliases.length == 0 ? false: embed.addField(`Aliases`, aliases, false);
+
+  embed.addField(`Description`, command.description, false);
+  return embed;
+}
+
+function campaignEmbed(campaign){
+
 }
 
 //returns a help string for a command given an array containing the information needed
@@ -55,22 +85,19 @@ module.exports = {
     //if the arguments are valid
       if(validate(args)){
         try {
-          //initialize the items array to stored relevant information about the cammond/campaign
-          var items =[];
-          var response = "";
+          var embed = new Discord.MessageEmbed()
+                  .setColor(`#FF0000`)
+                  .setTitle(`${config.name} Commands List`)
+                  .setFooter(`${config.name}`);
 
           //if the help command was called without specifying a command or campaign
           if(args.length == 0) {
             //for every command loaded to the client
-            for(var command of client.commands){
-              items = [];
-              var command = command[1];
-              //push relevant information from the command
-              items.push(command.name, command.description, command.usage);
-              response = `${response}${displayCommand(items)}\n`;
-            }
-            //message the help box for this command
-            message.channel.send(response);
+            client.commands.forEach(value => {
+              addEmbedField(embed, value);
+            })
+            //message the help embed for this command
+            message.channel.send(embed);
             return;
           }
 
@@ -78,9 +105,7 @@ module.exports = {
           if(client.commands.has(args[0].toLowerCase())){
             //find this specific command in the client's commands
             command = client.commands.get(args[0]);
-            //push relevant information from the command
-            items.push(command.name, command.description, command.usage, command.aliases);
-            response = displayCommand(items);
+            response = commandEmbed(embed, command);
           // if a campaign was specified in the help call
           } else if(client.campaigns.has(args[0].toLowerCase())){
             //find this specific campaign in the client's campaign's
