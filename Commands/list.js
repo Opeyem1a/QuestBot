@@ -25,7 +25,7 @@ module.exports = {
         message.reply("Sorry, that wasn't valid");
       }
   },
-  enabled: true,
+  enabled: false,
   guildOnly: false,
   aliases: [],
   userPermLevel: 3,
