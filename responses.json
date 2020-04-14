@@ -4,5 +4,8 @@
   "userFileExists": "You already have an account",
   "userNewFile": "A new user file has been created for",
   "botNoPerms": "Sorry, I don't have the required permissions to complete this command.",
-  "userNoPerms": "Sorry, it seems you don't have the required permissions to perform this command. :/"
+  "userNoPerms": "Sorry, it seems you don't have the required permissions to perform this command. :/",
+  "ball": ["Honestly...I have not the *slightest clue*", "For sure", "That's for you to figure out", "pft", "Yeah", "Of  course.", "lol",
+    "Hell no. Just give up. You're done.", "Maybe not", "Yikes, *probably* not until you get some common sense", "That's so dumb I'm not even going to answer",
+    "Obviously not", "Bruh, nah, you just *can't*", "Nope. Just, nope", "YES", "LMAO", "😂", "🤣", "Listen buddy, I got bad news for you", "Why ask me?"]
 }
