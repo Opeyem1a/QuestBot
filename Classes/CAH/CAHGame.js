@@ -12,18 +12,6 @@ const emojiMap = new Map([
   [4, '4️⃣'],
   [5, '5️⃣']]);
 
-function sendPlayerMessage(user, players, resolve){
-  console.log(`Sent message to [${user.username}]`);
-  user.send(`Adding you to the game...`).then(messageDM => {
-    console.log(user.username);
-    //map contains a player's hand of cards
-    const val = [players.get(user.id), messageDM, new Map()];
-    players.set(user.id, val);
-    resolve();
-  })
-  .catch(error => console.error(error));
-}
-
 async function updateMessage(playersOBJ, data, resolve){
   //data === [User Object, DM Message Object, Map() of current hand]
   var player = data[0];
@@ -47,14 +35,12 @@ async function updateMessage(playersOBJ, data, resolve){
   promise.then((embed) => {
     player.send(embed)
       .then(newDM => {
-        console.log(newDM.embeds[0].description);
         var newData = [data[0], newDM, data[2]];
         playersOBJ.set(data[0].id, newData);
         return newDM;
       })
       .then(newDM => {
         dm.delete().catch(error => console.error(error));
-        console.log("B" + newDM.embeds[0].description);
         emojiMap.forEach(values => {
           newDM.react(values);
         })
@@ -83,6 +69,17 @@ module.exports = class CAHGame {
     this.players = new Map();
     this.GM = message.author;
     this.joinMessage = "";
+  }
+
+  sendPlayerMessage(user, players, resolve){
+    console.log(`${this.GM.username} CAH Game: Sent message to [${user.username}]`);
+    user.send(`Adding you to the game...`).then(messageDM => {
+      //map contains a player's hand of cards
+      const val = [players.get(user.id), messageDM, new Map()];
+      players.set(user.id, val);
+      resolve();
+    })
+    .catch(error => console.error(error));
   }
 
   leaderboard(){
@@ -128,7 +125,7 @@ module.exports = class CAHGame {
             if(!CAHGame.playing.has(user.id)) {
               if(user.bot) continue;
               else {
-                console.log(`${user.username} has joined a game of CAH.`);
+                console.log(`${user.username} has joined ${this.GM.username}'s game of CAH.`);
                 this.players.set(user.id, user);
                 CAHGame.playing.set(user.id, user);
               }
@@ -136,6 +133,8 @@ module.exports = class CAHGame {
               this.message.channel.send(`${f.bold(user.username)}, you're already playing another Cards Against Humanity game so you can't be added to this one! :'(`);
             }
           }
+        }).then(() => {
+          this.players.set(this.GM.id, this.GM);
         }).then(() => {
           this.setup();
         })
@@ -145,10 +144,10 @@ module.exports = class CAHGame {
   setup() {
     let sendAll = Array.from(this.players.values()).map(user => {
       return new Promise((resolve) => {
-        sendPlayerMessage(user, this.players, resolve);
+        this.sendPlayerMessage(user, this.players, resolve);
       });
     });
-    Promise.all(sendAll).then(() => this.test())
+    Promise.all(sendAll)
       .then(() => this.play())
       .catch(error => console.error(error));
   }
@@ -194,7 +193,6 @@ module.exports = class CAHGame {
         var win = 0;
         //loop while game is not over
         do {
-          console.log("Here2");
           //decide whos turn it currently is (go 1 by 1 through each player) and increment turn after
           //create a round with the round owner distinct from the players
           var currentRound = new Round(
@@ -209,10 +207,6 @@ module.exports = class CAHGame {
           const winner = currentRound.run();
           //choose a black card and show it to everyone (edit their DM message), black card on top
         } while (win != 0);
-        // this.players.forEach(values => {
-        //   console.log("H" + values[1].embeds[0].description);
-        //   values[1].react('😢');
-        // })
       })
 
       .catch(e => console.error(e));

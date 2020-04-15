@@ -22,7 +22,6 @@ module.exports = class Round {
   run() {
     //display the in-play black card to all players
     this.players.forEach(values => {
-      console.log("Here1");
       const newEmbed = new Discord.MessageEmbed(values[1].embeds[0])
          .setDescription(`Card in play: ${this.blackcard}`);
 
