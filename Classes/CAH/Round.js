@@ -29,13 +29,14 @@ module.exports = class Round {
     start.then(() => {
       this.players.forEach(player => {
         var newEmbed;
-        if(player[0].id == this.ownerID) {
+        if(player[0].id == this.ownerID) { //if this player is the turn owner
           var ownerHand = Array.from(this.players.get(this.ownerID)[2].values()).reduce((acc, next) => {
             if(acc) return `${acc}, ${next}`; else return `${next}`;
           }, "");
           newEmbed = new Discord.MessageEmbed()
               .setTitle(`Your Turn!`)
               .setDescription(`Card in play: ${this.blackcard}`)
+              .addField(`What do you do?`, `Once you've confirmed that everyone has locked in their choices, send 'reveal' in this channel!`, false)
               .addField(`Your Hand`, ownerHand, false)
               .setFooter(`${player[0].username}'s Hand`);
         } else {
