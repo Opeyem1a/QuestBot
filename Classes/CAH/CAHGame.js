@@ -190,7 +190,7 @@ module.exports = class CAHGame {
         });
 
         var turn = 0;
-        var win = 0;
+        var winner = 0;
         //loop while game is not over
         do {
           //decide whos turn it currently is (go 1 by 1 through each player) and increment turn after
@@ -203,10 +203,21 @@ module.exports = class CAHGame {
             this.blackcards.shift() //chooses a blackcard for this turn
           );
 
+          console.log(`Turns Len: ` + turnOrder.length);
+
           //create a Round object and run it
-          const winner = currentRound.run();
+          var out = currentRound.run();
+          winner = out.then(msg => {
+            console.log(msg);
+            winner = currentRound.winner();
+          }).then(() => {
+            console.log(`Update Winner: ` + winner);
+          })
+          .catch(e => console.error(e));
           //choose a black card and show it to everyone (edit their DM message), black card on top
-        } while (win != 0);
+        } while (winner == 1);
+
+        console.log(`Outside Loop`);
       })
 
       .catch(e => console.error(e));
