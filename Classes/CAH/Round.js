@@ -28,20 +28,24 @@ module.exports = class Round {
     })
     start.then(() => {
       this.players.forEach(player => {
+        var newEmbed;
         if(player[0].id == this.ownerID) {
-          const newEmbed = new Discord.MessageEmbed(/*player[1].embeds[0]*/)
+          var ownerHand = Array.from(this.players.get(this.ownerID)[2].values()).reduce((acc, next) => {
+            if(acc) return `${acc}, ${next}`; else return `${next}`;
+          }, "");
+          newEmbed = new Discord.MessageEmbed()
               .setTitle(`Your Turn!`)
               .setDescription(`Card in play: ${this.blackcard}`)
-              .addField(`Your Hand`, )
+              .addField(`Your Hand`, ownerHand, false)
               .setFooter(`${player[0].username}'s Hand`);
         } else {
-          const newEmbed = new Discord.MessageEmbed(player[1].embeds[0])
+          newEmbed = new Discord.MessageEmbed(player[1].embeds[0])
               .setTitle(`${this.owner.username}'s Turn!`)
               .setDescription(`Card in play: ${this.blackcard}`)
               .setFooter(`${player[0].username}'s Hand`);
         }
+        player[1].edit(newEmbed).catch(e => console.error(e));
       });
-      player[1].edit(newEmbed).catch(e => console.error(e))
     }).then(() => {
       const filter = m => {return m.content.toLowerCase().startsWith('reveal') && m.author.id === this.ownerID;};
       this.owner.dmChannel.awaitMessages(filter, { max: 1, time: 200000, errors: ['time'] })
